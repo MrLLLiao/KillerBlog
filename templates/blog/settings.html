@@ -1,0 +1,23 @@
+{% extends 'base.html' %}
+{% block title %}博客外观{% endblock %}
+{% block content %}
+<section class="form-shell">
+  <h1>个性化博客</h1>
+  <p class="muted">设置标题、背景与主题色，打造你的风格博客。</p>
+  <form method="post" enctype="multipart/form-data" class="stacked-form">
+    {% csrf_token %}
+    {% for field in form %}
+      <label>{{ field.label }}{{ field }}</label>
+      {% if field.help_text %}<small class="muted">{{ field.help_text }}</small>{% endif %}
+      {% if field.errors %}<div class="error">{{ field.errors }}</div>{% endif %}
+    {% endfor %}
+    <button class="button primary" type="submit">保存</button>
+  </form>
+  {% if setting.hero_image %}
+    <div class="preview">
+      <p class="eyebrow">当前背景</p>
+      <img src="{{ setting.hero_image.url }}" alt="背景图" />
+    </div>
+  {% endif %}
+</section>
+{% endblock %}

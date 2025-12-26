@@ -1,0 +1,79 @@
+{% extends 'base.html' %}
+{% load blog_extras %}
+{% block title %}{{ object.title }} · ABlog{% endblock %}
+{% block content %}
+<article class="panel">
+  <header class="article__header">
+    <div class="article__meta">
+      {% if object.category %}<span class="pill pill--soft">{{ object.category.name }}</span>{% endif %}
+      <span class="pill">{{ object.created_at|date:"Y-m-d H:i" }}</span>
+      <span class="pill">{{ object.views }} 次阅读</span>
+    </div>
+    <h1>{{ object.title }}</h1>
+    <p class="lede">{{ object.excerpt }}</p>
+    <div class="chip-row">{% for tag in object.tags.all %}<span class="chip">#{{ tag.name }}</span>{% endfor %}</div>
+  </header>
+  {% if object.cover_image %}
+    <div class="cover"><img src="{{ object.cover_image.url }}" alt="封面" /></div>
+  {% endif %}
+  <div class="article__body">{{ object.content|markdown|safe }}</div>
+  <footer class="article__footer">
+    <div class="author">
+      {% if object.author.avatar %}<img src="{{ object.author.avatar.url }}" alt="头像" />{% endif %}
+      <div>
+        <p class="eyebrow">作者</p>
+        <strong>{{ object.author.username }}</strong>
+        <p class="muted">{{ object.author.bio }}</p>
+      </div>
+    </div>
+    {% if user == object.author %}
+      <div class="button-row">
+        <a class="button ghost" href="{% url 'blog:post-edit' object.slug %}">编辑</a>
+        <form action="{% url 'blog:post-delete' object.slug %}" method="post">{% csrf_token %}<button class="button danger" type="submit">删除</button></form>
+      </div>
+    {% endif %}
+  </footer>
+</article>
+
+<section class="comments">
+  <h2>评论</h2>
+  {% if user.is_authenticated and object.allow_comment %}
+  <form method="post" class="comment-form">
+    {% csrf_token %}
+    <textarea name="content" rows="3" placeholder="分享你的想法"></textarea>
+    <button class="button primary" type="submit">发布</button>
+  </form>
+  {% elif not user.is_authenticated %}
+    <p class="muted">登录后参与讨论。</p>
+  {% endif %}
+  <div class="comment-list">
+    {% for comment in object.comments.all %}
+      <div class="comment">
+        <div class="comment__meta">{{ comment.author.username }} · {{ comment.created_at|date:"Y-m-d H:i" }}</div>
+        <p>{{ comment.content }}</p>
+        {% if comment.replies.all %}
+          <div class="replies">
+            {% for reply in comment.replies.all %}
+              <div class="comment reply">
+                <div class="comment__meta">{{ reply.author.username }} · {{ reply.created_at|date:"Y-m-d H:i" }}</div>
+                <p>{{ reply.content }}</p>
+              </div>
+            {% endfor %}
+          </div>
+        {% endif %}
+      </div>
+    {% empty %}
+      <p class="muted">还没有评论。</p>
+    {% endfor %}
+  </div>
+</section>
+
+<section class="related">
+  <h3>同类推荐</h3>
+  <div class="card-grid">
+    {% for p in related_posts %}
+      <article class="card compact"><a href="{{ p.get_absolute_url }}">{{ p.title }}</a><span class="muted"> · {{ p.created_at|date:"Y-m-d" }}</span></article>
+    {% empty %}<p class="muted">暂无推荐。</p>{% endfor %}
+  </div>
+</section>
+{% endblock %}

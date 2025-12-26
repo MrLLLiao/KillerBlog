@@ -1,0 +1,22 @@
+{% extends 'base.html' %}
+{% block title %}个人主页 · ABlog{% endblock %}
+{% block content %}
+<section class="profile">
+  <div class="profile__header">
+    {% if profile_user.avatar %}<img class="avatar" src="{{ profile_user.avatar.url }}" alt="头像">{% endif %}
+    <div>
+      <h1>{{ profile_user.username }}</h1>
+      <p class="muted">{{ profile_user.bio }}</p>
+      {% if user == profile_user %}<a class="button ghost" href="{% url 'accounts:profile-edit' %}">编辑资料</a>{% endif %}
+    </div>
+  </div>
+  <div class="profile__posts">
+    <h2>文章</h2>
+    <ul>
+      {% for post in profile_user.posts.all %}
+        <li><a href="{{ post.get_absolute_url }}">{{ post.title }}</a> <span class="muted">· {{ post.created_at|date:"Y-m-d" }}</span></li>
+      {% empty %}<li class="muted">尚未发布文章。</li>{% endfor %}
+    </ul>
+  </div>
+</section>
+{% endblock %}

@@ -1,0 +1,40 @@
+{% load static %}
+<!doctype html>
+<html lang="zh-CN" class="theme-light">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>{% block title %}ABlog{% endblock %}</title>
+  <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=SF+Pro+Display:wght@400;500;600&display=swap">
+    <link rel="stylesheet" href="{% static 'css/main.css' %}?v=2">
+  {% block head_extra %}{% endblock %}
+</head>
+<body class="page">
+  <header class="topbar">
+    <div class="topbar__brand"><a href="/">KillerBlog</a></div>
+    <nav class="topbar__nav">
+      <a href="/" class="nav-link">首页</a>
+      {% if user.is_authenticated %}
+        <a href="{% url 'blog:post-create' %}" class="nav-link">写文章</a>
+        <a href="{% url 'blog:blog-setting' %}" class="nav-link">主题</a>
+        <a href="{% url 'accounts:profile' %}" class="nav-link">个人中心</a>
+        <form action="{% url 'accounts:logout' %}" method="post" class="nav-link nav-link__form">{% csrf_token %}<button type="submit">退出</button></form>
+      {% else %}
+        <a href="{% url 'accounts:login' %}" class="nav-link">登录</a>
+        <a href="{% url 'accounts:register' %}" class="nav-link highlight">加入</a>
+      {% endif %}
+    </nav>
+  </header>
+  <main class="main">
+    {% if messages %}
+      <div class="messages">
+        {% for message in messages %}
+          <div class="message message--{{ message.tags }}">{{ message }}</div>
+        {% endfor %}
+      </div>
+    {% endif %}
+    {% block content %}{% endblock %}
+  </main>
+  <footer class="footer">Clean reading experience.</footer>
+</body>
+</html>

@@ -1,0 +1,15 @@
+{% extends 'base.html' %}
+{% block title %}编辑资料{% endblock %}
+{% block content %}
+<section class="form-shell">
+  <h1>编辑个人信息</h1>
+  <form method="post" enctype="multipart/form-data" class="stacked-form">
+    {% csrf_token %}
+    {% for field in form %}
+      <label>{{ field.label }}{{ field }}</label>
+      {% if field.errors %}<div class="error">{{ field.errors }}</div>{% endif %}
+    {% endfor %}
+    <button class="button primary" type="submit">保存</button>
+  </form>
+</section>
+{% endblock %}

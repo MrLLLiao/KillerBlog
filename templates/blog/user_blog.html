@@ -1,0 +1,63 @@
+{% extends "base.html" %}
+{% block title %}
+  {% if blog_setting %}{{ blog_setting.title }}{% else %}{{ blog_owner.username }} 的博客{% endif %}
+{% endblock %}
+
+{% block content %}
+<section class="hero hero--bg"
+  {% if blog_setting and blog_setting.hero_image %}
+    style="background-image:url('{{ blog_setting.hero_image.url }}');"
+  {% endif %}
+>
+  <div class="hero__copy">
+    <h1>
+      {% if blog_setting %}{{ blog_setting.title }}{% else %}{{ blog_owner.username }} 的博客{% endif %}
+    </h1>
+    {% if blog_setting and blog_setting.subtitle %}
+      <p class="lede">{{ blog_setting.subtitle }}</p>
+    {% endif %}
+    {% if blog_setting and blog_setting.description %}
+      <p class="muted">{{ blog_setting.description }}</p>
+    {% endif %}
+    <p class="muted">@{{ blog_owner.username }}</p>
+  </div>
+</section>
+
+<section class="card-grid card-grid--flow">
+  {% for post in object_list %}
+    <article class="card card--elevated">
+      <div class="card__body">
+        <div class="card__meta">
+          {% if post.category %}<span>{{ post.category.name }}</span><span>·</span>{% endif %}
+          <span>{{ post.created_at|date:"Y-m-d" }}</span>
+          {% if post.status != 'published' %}<span class="pill pill--soft">草稿</span>{% endif %}
+        </div>
+
+        <a href="{% url 'blog:post-detail' slug=post.slug %}" class="card__title">
+          {{ post.title }}
+        </a>
+
+        <p class="card__excerpt">{{ post.excerpt|default:post.content|truncatechars:140 }}</p>
+
+        <div class="chip-row">
+          {% for tag in post.tags.all %}<span class="chip">#{{ tag.name }}</span>{% endfor %}
+        </div>
+      </div>
+    </article>
+  {% empty %}
+    <p class="muted">这个博客还没有文章。</p>
+  {% endfor %}
+</section>
+
+{% if is_paginated %}
+<div class="pagination">
+  {% if page_obj.has_previous %}
+    <a href="?page={{ page_obj.previous_page_number }}" class="button ghost">上一页</a>
+  {% endif %}
+  <span class="muted">第 {{ page_obj.number }} / {{ page_obj.paginator.num_pages }} 页</span>
+  {% if page_obj.has_next %}
+    <a href="?page={{ page_obj.next_page_number }}" class="button ghost">下一页</a>
+  {% endif %}
+</div>
+{% endif %}
+{% endblock %}

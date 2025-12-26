@@ -1,0 +1,9 @@
+{% extends 'base.html' %}
+{% block title %}删除文章{% endblock %}
+{% block content %}
+<section class="form-shell">
+  <h1>删除确认</h1>
+  <p>确定删除《{{ post.title }}》吗？该操作不可恢复。</p>
+  <form method="post">{% csrf_token %}<button class="button danger" type="submit">删除</button> <a class="button ghost" href="{{ post.get_absolute_url }}">取消</a></form>
+</section>
+{% endblock %}

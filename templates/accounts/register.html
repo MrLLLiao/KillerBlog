@@ -1,0 +1,17 @@
+{% extends 'base.html' %}
+{% block title %}注册 · ABlog{% endblock %}
+{% block content %}
+<section class="form-shell">
+  <h1>注册新账号</h1>
+  <form method="post" enctype="multipart/form-data" class="stacked-form">
+    {% csrf_token %}
+    {% for field in form %}
+      <label>{{ field.label }}{{ field }}</label>
+      {% if field.help_text %}<small class="muted">{{ field.help_text }}</small>{% endif %}
+      {% if field.errors %}<div class="error">{{ field.errors }}</div>{% endif %}
+    {% endfor %}
+    <button class="button primary" type="submit">注册</button>
+  </form>
+  <p class="muted">已有账号？<a href="{% url 'accounts:login' %}">直接登录</a></p>
+</section>
+{% endblock %}

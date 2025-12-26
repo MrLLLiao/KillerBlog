@@ -67,5 +67,5 @@ KillerBlog 是一个基于 Django 和 MySQL 的多用户博客平台，支持富
 1. 准备 Python 3.11+ 环境并安装依赖：`pip install -r requirements.txt`（如网络限制，可手动安装 Django/DRF 等基础包）。
 2. 如未准备 MySQL，直接使用默认 SQLite：确保环境变量 `USE_SQLITE` 保持默认值 `True`。
 3. 运行数据库迁移：`python manage.py migrate`。
-4. 启动开发服务：`python manage.py runserver 0.0.0.0:8000`，访问首页即可查看 Apple 风格博客界面。
+4. 启动开发服务：`python manage.py runserver 0.0.0.0:8000`，访问首页即可查看博客界面。
 5. 如需改用 MySQL：设置 `USE_SQLITE=False` 并提供 `MYSQL_DATABASE/MYSQL_USER/MYSQL_PASSWORD/MYSQL_HOST/MYSQL_PORT` 等环境变量后重新运行迁移。
